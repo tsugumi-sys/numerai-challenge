@@ -29,16 +29,16 @@ from xgboost import XGBClassifier
 from xgboost import XGBRegressor
 from sklearn.ensemble import RandomForestClassifier as RFC
 print('Model Training ...')
-#model = XGBClassifier(max_depth=30, learning_rate=0.01, n_estimators=2000, n_jobs=-1, colsample_bytree=0.1, use_label_encoder=False)
+model = XGBClassifier(max_depth=10, learning_rate=0.01, n_estimators=2000, n_jobs=-1, colsample_bytree=0.1, use_label_encoder=False)
 #model = XGBRegressor(max_depth=5, learning_rate=0.01, n_estimators=2000, n_jobs=-1, colsample_bytree=0.1)
-model = RFC(n_estimators=100, max_depth=30, random_state=1, n_jobs=10)
+#model = RFC(n_estimators=100, max_depth=30, random_state=1, n_jobs=10)
 model.fit(X_train, y_train)
 print('Generate Prediction ...')
 training_data["prediction"] = model.predict(X_train)
 evaluation_data["prediction"] = model.predict(X_valid)
 
-training_pred = pd.DataFrame({"prediction": label_encoder.inverse_transform(model.predict(X_train)), "id": training_data['id'], "label": training_data["target"]})
-eval_pred = pd.DataFrame({"prediction": label_encoder.inverse_transform(model.predict(X_valid)), "id": evaluation_data['id']})
+training_pred = pd.DataFrame({"id": training_data['id'], "prediction": label_encoder.inverse_transform(model.predict(X_train)), "label": training_data["target"]})
+eval_pred = pd.DataFrame({"id": evaluation_data['id'], "prediction": label_encoder.inverse_transform(model.predict(X_valid))})
 
-training_pred.to_csv('training_prediction.csv', index=False)
-eval_pred.to_csv('evaluation_prediction.csv', index=False)
+training_pred.to_csv('training_prediction_classif.csv', index=False)
+eval_pred.to_csv('evaluation_prediction_classif.csv', index=False)
